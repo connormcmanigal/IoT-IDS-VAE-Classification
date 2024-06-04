@@ -2,3 +2,4 @@ RT_IOT2022.csv
 *.pyc
 .ipynb_checkpoints/*
 iframe_figures/*
+*/venv/*
