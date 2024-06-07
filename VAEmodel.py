@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 class VariationalAutoEncoder(nn.Module):
-    def __init__(self, input_dim, h_dim = 200, z_dim = 20):
+    def __init__(self, input_dim, h_dim = 400, z_dim = 50):
         super(VariationalAutoEncoder, self).__init__()
         # encoder
         self.input2hidden = nn.Linear(input_dim, h_dim)
@@ -16,22 +16,25 @@ class VariationalAutoEncoder(nn.Module):
 
     def encoder(self, x):
         # q_phi(z|x)
-        h = F.relu(self.input2hidden(x))
+        h = F.leaky_relu(self.input2hidden(x))
         mu, sigma = self.hidden2mu(h), self.hidden2sigma(h)
         return mu, sigma
 
     def decoder(self, z):
         # p_theta(x|z)
-        h = F.relu(self.z2hidden(z))
+        h = F.leaky_relu(self.z2hidden(z))
         reconstruction = torch.sigmoid(self.hidden2output(h))
         return reconstruction
     
-    def elbo_loss_function(self, reconstructed_class, true_class, z_mu, z_sigma):
-        reconstruction_error = F.binary_cross_entropy(reconstructed_class, true_class, reduction = 'none')
-        reconstruction_error = torch.mean(torch.sum(reconstruction_error, -1))
-        kl_div = 0.5 * torch.sum(1 + 2 * torch.log(z_sigma) - (z_mu**2) - (z_sigma**2), -1)
+    def elbo_loss_function(self, reconstructed_data, true_data, z_mu, z_sigma):
+        # Reconstruction loss
+        recon_error = F.mse_loss(reconstructed_data, true_data, reduction = 'none')
+        recon_error = torch.mean(torch.sum(recon_error, -1))
+        # KL divergence
+        kl_div = -0.5 * torch.sum(1 + 2 * torch.log(z_sigma.clamp(min=1e-8)) - z_mu**2 - z_sigma**2, -1)
         kl_div = torch.mean(kl_div)
-        elbo = reconstruction_error - kl_div
+        # ELBO
+        elbo = recon_error + kl_div
         return elbo
 
     def forward(self, x):
