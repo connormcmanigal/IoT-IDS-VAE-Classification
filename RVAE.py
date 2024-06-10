@@ -3,7 +3,7 @@ import torch.nn as nn
 
 
 class Encoder(nn.Module):
-    def __init__(self,input_dim, latent_dim, hidden_dim=256):
+    def __init__(self,input_dim, latent_dim, hidden_dim):
         super(Encoder, self).__innit__()
         self.fc1=nn.Linear(input_dim, hidden_dim)
         self.fc2=nn.Linear(hidden_dim,hidden_dim)
@@ -18,7 +18,7 @@ class Encoder(nn.Module):
         return mu,sigma
     
 class Decoder(nn.Module):
-    def __init__(self, output_dim, latent_dim, hidden_dim=256):
+    def __init__(self, output_dim, latent_dim, hidden_dim):
         super(Encoder,self).__innit__()
         self.fc1=nn.Linear(latent_dim, hidden_dim)
         self.fc2=nn.Linear(hidden_dim, hidden_dim)
@@ -32,13 +32,21 @@ class Decoder(nn.Module):
 
 class RVAE(nn.Module):
     # i will finish dis when i wake up
-    def __init__(self, latent_dim, in_out_dim, hidden_dim, beta):
+    def __init__(self, latent_dim, in_out_dim, beta, hidden_dim=256):
         super(RVAE,self).__innit__()
-        ...
+        self.encoder=Encoder(in_out_dim, latent_dim, hidden_dim=hidden_dim)
+        self.decoder=Decoder(in_out_dim, latent_dim, hidden_dim=hidden_dim)
+        self.beta=beta
     def forward(self, x):
-        ...
+        mu, sigma= self.encoder(x)
+        z=self.sample(mu,sigma)
+        recon=self.decoder(z)
+        return recon, mu, sigma
+
     def sample(self, mu, sigma):
-        ...
+        norm_rand=torch.randint_like(mu)
+        z=(norm_rand*mu)+sigma
+        return z
 
 
 def beta_elbow(x_hat, x, beta, N, z_mu, z_sigma):
