@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 import math
+import torch.nn.functional as F
+import numpy as np
 
 
 class Encoder(nn.Module):
@@ -32,7 +34,7 @@ class Decoder(nn.Module):
         return recon
 
 class RVAE(nn.Module):
-    def __init__(self, latent_dim, in_out_dim, hidden_dim=4400):
+    def __init__(self, latent_dim, in_out_dim, hidden_dim=256):
         super(RVAE,self).__init__()
         self.encoder=Encoder(in_out_dim, latent_dim, hidden_dim=hidden_dim)
         self.decoder=Decoder(in_out_dim, latent_dim, hidden_dim=hidden_dim)
@@ -48,11 +50,12 @@ class RVAE(nn.Module):
         return z
 
 
-def beta_elbow(x_hat, x, beta, z_mu, z_sigma):
+def beta_elbow(x_hat, x, beta, z_mu, z_sigma, sigma=1):
     # https://arxiv.org/pdf/2006.08204
-    # this loss assumes that all columns are continuous which i believe is true
-    # beta_cross_entropy=-((beta+1)/beta) * torch.mean(torch.exp((-0.5 * z_sigma * beta) * torch.sum((x_hat - x)**2, dim=-1))-1)
-    beta_cross_entropy=-((beta+1)/beta) * torch.mean(((1/(2*math.pi*z_sigma**2)**(beta/2)) * torch.exp((-0.5*beta*z_sigma**2)*torch.sum((x_hat-x)**2, dim=1))-1))
-    kl_div=torch.mean(0.5 * torch.sum(1 + 2 * torch.log(z_sigma) - (z_mu**2)  - (z_sigma**2), dim=-1))
-    return beta_cross_entropy + kl_div
-
+    const=np.power((0.5 * math.pi * sigma), beta/2)
+    exponential=torch.exp(-(0.5 * beta * sigma)*F.mse_loss(x_hat,x, reduction='none')-1)
+    exponential=torch.mean(torch.sum(exponential, -1))
+    beta_cross_entropy= ((beta+1)/beta) * (const * exponential)
+    kl_div=torch.mean(0.5 * torch.sum(1 + 2 * torch.log(z_sigma.clamp(min=1e-8)) - (z_mu**2)  - (z_sigma**2), dim=-1))
+    # print(beta_cross_entropy)
+    return beta_cross_entropy - kl_div
