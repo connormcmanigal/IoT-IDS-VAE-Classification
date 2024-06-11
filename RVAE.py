@@ -32,11 +32,11 @@ class Decoder(nn.Module):
 
 class RVAE(nn.Module):
     # i will finish dis when i wake up
-    def __init__(self, latent_dim, in_out_dim, beta, hidden_dim=256):
+    def __init__(self, latent_dim, in_out_dim, hidden_dim=256):
         super(RVAE,self).__innit__()
         self.encoder=Encoder(in_out_dim, latent_dim, hidden_dim=hidden_dim)
         self.decoder=Decoder(in_out_dim, latent_dim, hidden_dim=hidden_dim)
-        self.beta=beta
+        # self.beta=beta
     def forward(self, x):
         mu, sigma= self.encoder(x)
         z=self.sample(mu,sigma)
@@ -49,7 +49,7 @@ class RVAE(nn.Module):
         return z
 
 
-def beta_elbow(x_hat, x, beta, N, z_mu, z_sigma):
+def beta_elbow(x_hat, x, beta, z_mu, z_sigma):
     # https://arxiv.org/pdf/2006.08204
     # this loss assumes that all columns are continuous which i believe is true
     beta_cross_entropy=-((beta+1)/beta) * torch.mean(torch.exp((-0.5 * z_sigma * beta) * torch.sum((x_hat - x)**2))-1)
