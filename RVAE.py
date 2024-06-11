@@ -19,7 +19,7 @@ class Encoder(nn.Module):
     
 class Decoder(nn.Module):
     def __init__(self, output_dim, latent_dim, hidden_dim):
-        super(Encoder,self).__init__()
+        super(Decoder,self).__init__()
         self.fc1=nn.Linear(latent_dim, hidden_dim)
         self.fc2=nn.Linear(hidden_dim, hidden_dim)
         self.out=nn.Linear(hidden_dim, output_dim)
