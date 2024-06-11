@@ -4,7 +4,7 @@ import torch.nn as nn
 
 class Encoder(nn.Module):
     def __init__(self,input_dim, latent_dim, hidden_dim):
-        super(Encoder, self).__innit__()
+        super(Encoder, self).__init__()
         self.fc1=nn.Linear(input_dim, hidden_dim)
         self.fc2=nn.Linear(hidden_dim,hidden_dim)
         self.mu=nn.Linear(hidden_dim, latent_dim)
@@ -19,7 +19,7 @@ class Encoder(nn.Module):
     
 class Decoder(nn.Module):
     def __init__(self, output_dim, latent_dim, hidden_dim):
-        super(Encoder,self).__innit__()
+        super(Encoder,self).__init__()
         self.fc1=nn.Linear(latent_dim, hidden_dim)
         self.fc2=nn.Linear(hidden_dim, hidden_dim)
         self.out=nn.Linear(hidden_dim, output_dim)
@@ -33,7 +33,7 @@ class Decoder(nn.Module):
 class RVAE(nn.Module):
     # i will finish dis when i wake up
     def __init__(self, latent_dim, in_out_dim, hidden_dim=256):
-        super(RVAE,self).__innit__()
+        super(RVAE,self).__init__()
         self.encoder=Encoder(in_out_dim, latent_dim, hidden_dim=hidden_dim)
         self.decoder=Decoder(in_out_dim, latent_dim, hidden_dim=hidden_dim)
         # self.beta=beta
