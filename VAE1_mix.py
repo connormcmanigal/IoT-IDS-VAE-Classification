@@ -6,12 +6,12 @@ import numpy as np
 
 
 class Encoder(nn.Module):
-    def __init__(self,input_dim, latent_dim, hidden_dim):
+    def __init__(self, input_dim, z_dim, h_dim1, h_dim2):
         super(Encoder, self).__init__()
-        self.fc1=nn.Linear(input_dim, hidden_dim)
-        self.fc2=nn.Linear(hidden_dim, hidden_dim)
-        self.mu=nn.Linear(hidden_dim, latent_dim)
-        self.sigma=nn.Linear(hidden_dim, latent_dim)
+        self.fc1=nn.Linear(input_dim, h_dim1)
+        self.fc2=nn.Linear(h_dim1, h_dim2)
+        self.mu=nn.Linear(h_dim2, z_dim)
+        self.sigma=nn.Linear(h_dim2, z_dim)
         self.relu=nn.ReLU()
     def forward(self, x):
         x=self.relu(self.fc1(x))
@@ -21,11 +21,11 @@ class Encoder(nn.Module):
         return mu,sigma
     
 class Decoder(nn.Module):
-    def __init__(self, output_dim, latent_dim, hidden_dim):
+    def __init__(self, input_dim, z_dim, h_dim1, h_dim2):
         super(Decoder,self).__init__()
-        self.fc1=nn.Linear(latent_dim, hidden_dim)
-        self.fc2=nn.Linear(hidden_dim, hidden_dim)
-        self.out=nn.Linear(hidden_dim, output_dim)
+        self.fc1=nn.Linear(z_dim, h_dim1)
+        self.fc2=nn.Linear(h_dim1, h_dim2)
+        self.out=nn.Linear(h_dim2, input_dim)
         self.relu=nn.ReLU()
         self.softmax=nn.Softmax(dim=1)
     def forward(self, z):
@@ -35,10 +35,10 @@ class Decoder(nn.Module):
         return recon
 
 class VAE3(nn.Module):
-    def __init__(self, latent_dim, in_out_dim, hidden_dim=100):
+    def __init__(self, z_dim, input_dim, h_dim1, h_dim2):
         super(VAE3,self).__init__()
-        self.encoder=Encoder(in_out_dim, latent_dim, hidden_dim=hidden_dim)
-        self.decoder=Decoder(in_out_dim, latent_dim, hidden_dim=hidden_dim)
+        self.encoder=Encoder(input_dim, z_dim, h_dim1, h_dim2)
+        self.decoder=Decoder(input_dim, z_dim, h_dim1, h_dim2)
     def forward(self, x):
         mu, sigma= self.encoder(x)
         z=self.sample(mu,sigma)
