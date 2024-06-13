@@ -40,6 +40,10 @@ class VAE2(nn.Module):
         elbo = recon_error + kl_div
         return elbo
 
+    def loss(self, reconstructed_data, true_data, z_mu, z_sigma, cat_feature_indices):
+        """Wrapper function, because proper class inheritance is for nerds"""
+        return self.elbo_loss_function(reconstructed_data, true_data, z_mu, z_sigma)
+    
     def forward(self, x):
         # return x reconstructed as well as mu and sigma due to use in KL divergence
         mu, sigma = self.encoder(x)

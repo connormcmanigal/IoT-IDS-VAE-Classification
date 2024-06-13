@@ -44,6 +44,10 @@ class VAE4(nn.Module):
         norm_rand=torch.randn_like(sigma)
         z=mu+(sigma*norm_rand)
         return z
+
+    def loss(self, reconstructed_data, true_data, z_mu, z_sigma, cat_feature_indices):
+        """Wrapper function, because proper class inheritance is for nerds"""
+        return self.combo_elbo(reconstructed_data, true_data, z_mu, z_sigma, cat_feature_indices)
     
     def combo_elbo(self,reconstructed_data, true_data, z_mu, z_sigma, cat_feature_indicies):
         # https://pytorch.org/docs/stable/generated/torch.nn.SmoothL1Loss.html

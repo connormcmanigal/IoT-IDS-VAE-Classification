@@ -80,6 +80,9 @@ class VAE3(nn.Module):
         elbo = recon_tot + kl_divergence
         return elbo
 
+    def loss(self, reconstructed_data, true_data, z_mu, z_sigma, cat_feature_indices):
+        """Wrapper function, because proper class inheritance is for nerds"""
+        return self.combo_elbo(reconstructed_data, true_data, z_mu, z_sigma, cat_feature_indices)
 
 # def beta_elbo(x_hat, x, beta, z_mu, z_sigma, sigma=1):
 #     # something is wrong with this i dont know what is going on i give up some numbers are not adding up
