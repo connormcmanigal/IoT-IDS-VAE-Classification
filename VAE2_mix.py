@@ -76,4 +76,4 @@ class VAE4(nn.Module):
         recon_tot = hubert + bce_logits
 
         elbo = recon_tot + kl_divergence
-        return elbo
+        return elbo, recon_tot

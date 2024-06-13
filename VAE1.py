@@ -34,7 +34,7 @@ class VAE1(nn.Module):
         kl_div = torch.mean(kl_div)
         # ELBO
         elbo = recon_error + kl_div
-        return elbo
+        return elbo, recon_error
 
     def loss(self, reconstructed_data, true_data, z_mu, z_sigma, cat_feature_indices):
         """Wrapper function, because proper class inheritance is for nerds"""

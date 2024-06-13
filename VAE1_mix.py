@@ -78,7 +78,7 @@ class VAE3(nn.Module):
         recon_tot = hubert + bce_logits
 
         elbo = recon_tot + kl_divergence
-        return elbo
+        return elbo, recon_tot
 
     def loss(self, reconstructed_data, true_data, z_mu, z_sigma, cat_feature_indices):
         """Wrapper function, because proper class inheritance is for nerds"""
