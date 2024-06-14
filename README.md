@@ -2,7 +2,7 @@
 
 **View write up here**: 
 
-** Connor McManigal, Aaron Mui, Rishabh Verma, and Peyton Politewicz**
+*Connor McManigal, Aaron Mui, Rishabh Verma, and Peyton Politewicz*
 
 ## Abstract:
 
