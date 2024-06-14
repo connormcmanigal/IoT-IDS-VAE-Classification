@@ -1,6 +1,6 @@
 # IoT-IDS-VAE-Classification
 
-**View write up here**: 
+**View write up here**: https://connormcmanigal.github.io/IoT-IDS-VAE-Classification/Final_Report.pdf
 
 *Connor McManigal, Aaron Mui, Rishabh Verma, and Peyton Politewicz*
 
