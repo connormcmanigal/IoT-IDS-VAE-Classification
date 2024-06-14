@@ -1,4 +1,4 @@
-# IoT-IDS-VAE-Classification
+# UnVAEling Network Anomalies: Detecting Network Attacks with Variational Autoencoders
 
 **View write up here**: https://connormcmanigal.github.io/IoT-IDS-VAE-Classification/Final_Report.pdf
 
